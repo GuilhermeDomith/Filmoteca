@@ -1042,7 +1042,7 @@ public class IgCadastrar extends JDialog {
 		if(campoValido)
 			filme.getGeneros().addAll(generosPadroes);
 		else
-			JOptionPane.showMessageDialog(this, "Existe campos que não foram preenchidos!", 
+			JOptionPane.showMessageDialog(this, "Existem campos que não foram preenchidos!", 
 					"Cadastrar Filme", JOptionPane.INFORMATION_MESSAGE);
 		
 		return campoValido;
