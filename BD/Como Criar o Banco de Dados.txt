@@ -1,0 +1,19 @@
+No SGBD PgAdmim:
+
+Crie um Usuário 'aluno' com Senha 'aluno';
+
+Crie um Database 'filmoteca' com Owner 'aluno';
+
+Selecione o database criado, no menu Tools, clique em 
+Query Tools,copie o script que está na pasta 'BD' do projeto 
+e cole no 'SQL Editor', depois pressione 'F6 para executar 
+o PgScript';
+
+Caso queira adicionar os dados já criados:
+
+Selecione o 'Database filmoteca', selecione a opção 'restore', 
+adicione o arquivo 'BancoDeDados.backup' que está na pasta BD 
+do projeto, selecione Rolename 'aluno', clique em 'Restore' e 
+pronto.
+
+Agora o programa Filmoteca pode ser iniciado!

@@ -1,0 +1,310 @@
+
+
+CREATE DATABASE filmoteca
+  WITH OWNER = aluno
+       ENCODING = 'UTF8'
+       TABLESPACE = pg_default
+       LC_COLLATE = 'Portuguese_Brazil.1252'
+       LC_CTYPE = 'Portuguese_Brazil.1252'
+       CONNECTION LIMIT = -1;
+
+
+
+CREATE SEQUENCE "artista-seq"
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 23
+  CACHE 1;
+ALTER TABLE "artista-seq"
+  OWNER TO aluno;
+
+
+
+CREATE SEQUENCE "autor-seq"
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 5
+  CACHE 1;
+ALTER TABLE "autor-seq"
+  OWNER TO aluno;
+
+
+
+CREATE SEQUENCE "diretor-seq"
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 3
+  CACHE 1;
+ALTER TABLE "diretor-seq"
+  OWNER TO aluno;
+
+
+
+CREATE SEQUENCE "filme-seq"
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 13
+  CACHE 1;
+ALTER TABLE "filme-seq"
+  OWNER TO aluno;
+
+
+
+CREATE SEQUENCE "genero-seq"
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 9
+  CACHE 1;
+ALTER TABLE "genero-seq"
+  OWNER TO aluno;
+
+
+
+CREATE SEQUENCE "pais-seq"
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 7
+  CACHE 1;
+ALTER TABLE "pais-seq"
+  OWNER TO aluno;
+
+
+
+
+
+CREATE TABLE artista
+(
+  codigoartista bigint NOT NULL DEFAULT nextval('"artista-seq"'::regclass),
+  nome character varying,
+  CONSTRAINT artista_pkey PRIMARY KEY (codigoartista)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE artista
+  OWNER TO aluno;
+
+
+
+
+CREATE TABLE autor
+(
+  nome character varying,
+  codigoautor bigint NOT NULL DEFAULT nextval('"autor-seq"'::regclass),
+  CONSTRAINT autor_pkey PRIMARY KEY (codigoautor)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE autor
+  OWNER TO aluno;
+
+
+
+
+CREATE TABLE diretor
+(
+  nome character varying,
+  codigodiretor bigint NOT NULL DEFAULT nextval('"diretor-seq"'::regclass),
+  CONSTRAINT diretor_pkey PRIMARY KEY (codigodiretor)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE diretor
+  OWNER TO aluno;
+
+
+
+
+CREATE TABLE filme
+(
+  codigofilme bigint NOT NULL DEFAULT nextval('"filme-seq"'::regclass),
+  titulo character varying,
+  duracao bigint,
+  ano character varying,
+  datalancamento date,
+  sinopse character varying,
+  classificacaoetaria character varying,
+  classificacaopessoal bigint,
+  midia character varying,
+  poster bytea,
+  classificacaoimdb bigint,
+  CONSTRAINT filme_pkey PRIMARY KEY (codigofilme)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE filme
+  OWNER TO aluno;
+
+
+
+
+CREATE TABLE genero
+(
+  descricao character varying,
+  codigogenero bigint NOT NULL DEFAULT nextval('"genero-seq"'::regclass),
+  CONSTRAINT genero_pkey PRIMARY KEY (codigogenero)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE genero
+  OWNER TO aluno;
+
+
+
+
+CREATE TABLE pais
+(
+  nome character varying,
+  codigopais bigint NOT NULL DEFAULT nextval('"pais-seq"'::regclass),
+  CONSTRAINT pais_pkey PRIMARY KEY (codigopais)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE pais
+  OWNER TO aluno;
+
+
+
+
+
+CREATE TABLE autorfilme
+(
+  codigoautor bigint,
+  codigofilme bigint,
+  CONSTRAINT autorfilme_codigoautor_fkey FOREIGN KEY (codigoautor)
+      REFERENCES autor (codigoautor) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT autorfilme_codigofilme_fkey FOREIGN KEY (codigofilme)
+      REFERENCES filme (codigofilme) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE autorfilme
+  OWNER TO aluno;
+
+
+
+
+
+CREATE TABLE diretorfilme
+(
+  codigofilme bigint,
+  codigodiretor bigint,
+  CONSTRAINT diretorfilme_codigodiretor_fkey FOREIGN KEY (codigodiretor)
+      REFERENCES diretor (codigodiretor) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT diretorfilme_codigofilme_fkey FOREIGN KEY (codigofilme)
+      REFERENCES filme (codigofilme) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE diretorfilme
+  OWNER TO aluno;
+
+
+
+
+
+CREATE TABLE elenco
+(
+  codigofilme bigint,
+  codigoartista bigint,
+  CONSTRAINT elenco_codigoartista_fkey FOREIGN KEY (codigoartista)
+      REFERENCES artista (codigoartista) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT elenco_codigofilme_fkey FOREIGN KEY (codigofilme)
+      REFERENCES filme (codigofilme) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE elenco
+  OWNER TO aluno;
+
+
+
+
+
+CREATE TABLE generofilme
+(
+  codigogenero bigint,
+  codigofilme bigint,
+  CONSTRAINT generofilme_codigofilme_fkey FOREIGN KEY (codigofilme)
+      REFERENCES filme (codigofilme) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT generofilme_codigogenero_fkey FOREIGN KEY (codigogenero)
+      REFERENCES genero (codigogenero) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE generofilme
+  OWNER TO aluno;
+
+
+
+
+CREATE TABLE paisfilme
+(
+  codigopais bigint,
+  codigofilme bigint,
+  CONSTRAINT paisfilme_codigofilme_fkey FOREIGN KEY (codigofilme)
+      REFERENCES filme (codigofilme) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT paisfilme_codigopais_fkey FOREIGN KEY (codigopais)
+      REFERENCES pais (codigopais) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE paisfilme
+  OWNER TO aluno;
+
+
+
+INSERT INTO genero(descricao, codigogenero) VALUES ("Aventura", 1);
+INSERT INTO genero(descricao, codigogenero) VALUES ("Comédia", 2);
+INSERT INTO genero(descricao, codigogenero) VALUES ("Ação", 3);
+INSERT INTO genero(descricao, codigogenero) VALUES ("Ficção Cientifica", 4);
+INSERT INTO genero(descricao, codigogenero) VALUES ("Romance", 5);
+INSERT INTO genero(descricao, codigogenero) VALUES ("Suspense", 6);
+INSERT INTO genero(descricao, codigogenero) VALUES ("Terror", 7);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
